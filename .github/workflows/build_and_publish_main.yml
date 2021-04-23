@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: Amadevus/pwsh-script@v2.0.1
+      with:
+        script: |
+          $moduleDirectoryPath = Join-Path $github.workspace "sandersaares.devops-scripts"
+          $moduleFilePath = Join-Path $moduleDirectoryPath "sandersaares.devops-scripts.psd1"
+
+          Import-Module $moduleFilePath
+          Set-PowerShellModuleMetadataBeforeBuild -path $moduleFilePath
+          Set-PowerShellModuleBuildString -path $moduleFilePath
+          Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose
