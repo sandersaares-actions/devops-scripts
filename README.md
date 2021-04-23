@@ -8,7 +8,8 @@ Usage as raw scripts:
 
 Usage as PowerShell module:
 
-1. `Install-Module sandersaares.devops-scripts`
+1. `Install-Module sandersaares.devops-scripts` (On first run)
+1. `Import-Module sandersaares.devops-scripts` (If already installed)
 1. Call the scripts as PowerShell functions (do not call them as scripts).
 
 Usage as GitHub actions:
