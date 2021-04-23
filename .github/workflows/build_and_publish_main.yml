@@ -23,3 +23,7 @@ jobs:
           Set-PowerShellModuleMetadataBeforeBuild -path $moduleFilePath -buildTimestamp $timestamp
           Set-PowerShellModuleBuildString -path $moduleFilePath -buildTimestamp $timestamp
           Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Scripts
+        path: sandersaares.devops-scripts/*.ps1
