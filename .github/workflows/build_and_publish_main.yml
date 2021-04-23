@@ -27,6 +27,10 @@ jobs:
           Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose
 
           Write-Output $versionString
+    - id: is_prerelease
+      uses: Amadevus/pwsh-script@v2.0.1
+      with:
+        script: Write-Output "${{ steps.publish_module.outputs.result }}" -like "*-pre*"
     - uses: papeloto/action-zip@v1
       with:
         files: sandersaares.devops-scripts/
@@ -35,6 +39,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         automatic_release_tag: latest
+        prerelease: ${{ steps.is_prerelease.outputs.result }}
         title: ${{ steps.publish_module.outputs.result }}
         files: |
           Scripts.zip
