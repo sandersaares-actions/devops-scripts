@@ -23,7 +23,7 @@ jobs:
           Import-Module $moduleFilePath
           # Outputs versionstring variable.
           Set-PowerShellModuleMetadataBeforeBuild -path $moduleFilePath -buildTimestamp $timestamp
-          $versionString = Set-PowerShellModuleBuildString -path $moduleFilePath -buildTimestamp $timestamp
+          $versionString = Set-PowerShellModuleBuildString -path $moduleFilePath
           Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose
 
           Write-Output $versionString
