@@ -27,13 +27,14 @@ jobs:
           Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose
     - uses: papeloto/action-zip@v1
       with:
-        files: sandersaares.devops-scripts/*.ps1
+        files: sandersaares.devops-scripts/
         dest: Scripts.zip
     - uses: marvinpinto/action-automatic-releases@latest
       env:
         versionstring: ${{ steps.publish_module.outputs.versionstring }}
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: latest
         title: ${{ steps.publish_module.outputs.versionstring }}
         files: |
           Scripts.zip
