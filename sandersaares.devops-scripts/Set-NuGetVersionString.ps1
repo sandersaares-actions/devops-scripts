@@ -57,4 +57,5 @@ function Set-NuGetVersionString {
 
     Write-Output $version
     Write-Host "##vso[task.setvariable variable=NuGetPackageVersion;]$version"
+    Write-Host "::set-output name=nugetversionstring::$version"
 }

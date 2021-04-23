@@ -32,4 +32,5 @@ function Set-PowerShellModuleBuildString {
     $fullVersion = "$version-$buildTimestamp"
 
     Write-Host "##vso[build.updatebuildnumber]$fullVersion"
+    Write-Host "::set-output name=versionstring::$fullVersion"
 }

@@ -11,7 +11,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: Amadevus/pwsh-script@v2.0.1
+    - id: publish_module
+      uses: Amadevus/pwsh-script@v2.0.1
       with:
         script: |
           $moduleDirectoryPath = Join-Path $github.workspace "sandersaares.devops-scripts"
@@ -20,10 +21,19 @@ jobs:
           $timestamp = [DateTimeOffset]::UtcNow.ToString("yyMMddHHmmss")
 
           Import-Module $moduleFilePath
+          # Outputs versionstring variable.
           Set-PowerShellModuleMetadataBeforeBuild -path $moduleFilePath -buildTimestamp $timestamp
           Set-PowerShellModuleBuildString -path $moduleFilePath -buildTimestamp $timestamp
           Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose
-    - uses: actions/upload-artifact@v2
+    - uses: papeloto/action-zip@v1
       with:
-        name: Scripts
-        path: sandersaares.devops-scripts/*.ps1
+        files: sandersaares.devops-scripts/*.ps1
+        dest: Scripts.zip
+    - uses: marvinpinto/action-automatic-releases@latest
+      env:
+        versionstring: ${{ steps.publish_module.outputs.versionstring }}
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        title: ${{ steps.publish_module.outputs.versionstring }}
+        files: |
+          Scripts.zip

@@ -75,6 +75,7 @@ function Set-DotNetBuildAndVersionStrings {
     # NB! In Azure YAML pipelines, a followup pipeline (e.g. a release) does NOT pick up the updated build number!
     # Microsoft says this is by design. You may need to write the version string to a file in order to pick it up in a release again.
     Write-Host "##vso[build.updatebuildnumber]$version"
+    Write-Host "::set-output name=versionstring::$version"
 
     Write-Host "Version string set!"
 }
