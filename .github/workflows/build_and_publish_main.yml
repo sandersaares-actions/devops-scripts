@@ -30,7 +30,7 @@ jobs:
     - id: is_prerelease
       uses: Amadevus/pwsh-script@v2.0.1
       with:
-        script: Write-Output "${{ steps.publish_module.outputs.result }}" -like "*-pre*"
+        script: Write-Output ("${{ steps.publish_module.outputs.result }}" -like "*-pre*")
     - uses: papeloto/action-zip@v1
       with:
         files: sandersaares.devops-scripts/
