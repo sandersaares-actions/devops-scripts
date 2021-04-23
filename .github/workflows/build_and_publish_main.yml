@@ -17,7 +17,9 @@ jobs:
           $moduleDirectoryPath = Join-Path $github.workspace "sandersaares.devops-scripts"
           $moduleFilePath = Join-Path $moduleDirectoryPath "sandersaares.devops-scripts.psd1"
 
+          $timestamp = [DateTimeOffset]::UtcNow.ToString("yyMMddHHmmss")
+
           Import-Module $moduleFilePath
-          Set-PowerShellModuleMetadataBeforeBuild -path $moduleFilePath
-          Set-PowerShellModuleBuildString -path $moduleFilePath
+          Set-PowerShellModuleMetadataBeforeBuild -path $moduleFilePath -buildTimestamp $timestamp
+          Set-PowerShellModuleBuildString -path $moduleFilePath -buildTimestamp $timestamp
           Publish-Module -Path "$moduleDirectoryPath" -NugetAPIKey "${{ secrets.PSGALLERY_API_KEY }}" -Verbose

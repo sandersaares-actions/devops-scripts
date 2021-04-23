@@ -2,7 +2,10 @@ function Set-PowerShellModuleMetadataBeforeBuild {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$path
+        [string]$path,
+
+        [Parameter(Mandatory)]
+        [string]$buildTimestamp
     )
 
     # The purpose of this script is to avoid having to manually increment the prerelease suffix on each build.
@@ -12,7 +15,7 @@ function Set-PowerShellModuleMetadataBeforeBuild {
     # to do the modification, so let's not bother with parsing if we need to string manipulate in the end anyway.
     $manifestText = Get-Content $path
 
-    $searchPattern = "^\s*Prerelease = '(.+)'\s*`$"
+    $searchPattern = "^\s*Prerelease *= *'(.+)'\s*`$"
 
     $prereleaseTagLine = $manifestText | Where-Object { $_ -match $searchPattern }
 
@@ -26,10 +29,8 @@ function Set-PowerShellModuleMetadataBeforeBuild {
         Write-Error "More than one line matched the prerelease version declaration."
     }
 
-    # If we do make a prerelease build, we put "-pre-123456" as the suffix, with the number being the build ID.
-    # The build ID is auto-incrementing as long as we use the same Azure Devops account, so it's all taken care of.
-    $buildId = ([int]$env:BUILD_BUILDID).ToString("000000")
-    $prereleaseSuffix = "-pre$buildId"
+    # If we do make a prerelease build, we put "-pre123456" as the suffix, with the timestamp.
+    $prereleaseSuffix = "-pre$buildTimestamp"
 
     Write-Host "Setting prerelease version suffix: $prereleaseSuffix"
 

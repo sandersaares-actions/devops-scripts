@@ -2,7 +2,10 @@ function Set-PowerShellModuleBuildString {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$path
+        [string]$path,
+
+        [Parameter(Mandatory)]
+        [string]$buildTimestamp
     )
 
     # The purpose of this script is to take the version string from the module manifest and to stick it in
@@ -26,8 +29,7 @@ function Set-PowerShellModuleBuildString {
 
     Write-Host "Parsed version string $version"
 
-    # Add parsed version as a prefix to whatever the build definition author specified.
-    $fullVersion = "$version-$($env:BUILD_BUILDNUMBER)"
+    $fullVersion = "$version-$buildTimestamp"
 
     Write-Host "##vso[build.updatebuildnumber]$fullVersion"
 }
