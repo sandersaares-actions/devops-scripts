@@ -17,7 +17,7 @@ function Get-TimeBasedNuGetVersionString() {
 
     $parser = '^(?<branch>.*-)?(?<versionnumber>\d{4}\.\d{3,4}\.\d+)-.+?(?<suffix>-.+)?$'
     if (-not ($original -match $parser)) {
-        Write-Error "Pipeline name $original does not match regex: $buildNumberParser"
+        Write-Error "Pipeline name $original does not match Get-TimeBasedVersionString output format as checked by regex: $buildNumberParser"
     }
 
     $versionnumber = $Matches.versionnumber

@@ -3,8 +3,8 @@ $ErrorActionPreference = "Stop"
 function Get-TimeBasedVersionString([string]$buildType) {
     # Only compatible with Azure DevOps (for now).
 
-    # We expect the name of the pipeline (in Build.BuildNumber) to be "$(date:yyyyMMdd)$(rev:.rr)"".
-    # This is transformed into a version number of the form "yyyy.Mdd.r".
+    $expectedFormat = '$(date:yyyy).$(date:Mdd).$(rev:r)'
+    # We expect the name of the pipeline (in Build.BuildNumber) to be the above Azure DevOps format string.
     # To this, we suffix the Git commit ID (-abcabcabc).
     # To this, we prefix the branch name if this is not the default branch (my-branch-123-).
 
@@ -20,28 +20,23 @@ function Get-TimeBasedVersionString([string]$buildType) {
 
     $commitId = $env:BUILD_SOURCEVERSION
 
-    $original = $env:BUILD_BUILDNUMBER
+    $versionNumber = $env:BUILD_BUILDNUMBER
 
     if (!$commitId) {
         Write-Error "BUILD_SOURCEVERSION environment variable not defined."
     }
 
-    if (!$original) {
+    if (!$versionNumber) {
         Write-Error "BUILD_BUILDNUMBER environment variable not defined."
     }
 
-    ### Figure out the version number.
+    ### Validate the version number.
 
-    $buildNumberParser = '^(?<major>\d{4})(?<minor>\d{4})\.(?<revision>\d+)$'
-    if (-not ($original -match $buildNumberParser)) {
-        Write-Error "Pipeline name $original does not match regex: $buildNumberParser"
+    $buildNumberParser = '^(?<major>\d{4})\.(?<minor>\d{3,4})\.(?<revision>\d+)$'
+    if (-not ($versionNumber -match $buildNumberParser)) {
+        Write-Error "Pipeline name $versionNumber does not match expected Azure DevOps format string $expectedFormat"
     }
 
-    $major = $Matches.major
-    $minor = $Matches.minor.TrimStart('0')
-    $revision = $Matches.revision.TrimStart('0')
-
-    $versionNumber = "$major.$minor.$revision"
     Write-Host "Version number is $versionNumber"
 
     ### Add Git commit ID.
