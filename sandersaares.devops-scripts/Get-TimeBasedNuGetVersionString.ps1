@@ -1,23 +1,24 @@
 $ErrorActionPreference = "Stop"
 
-function Get-TimeBasedNuGetVersionString() {
-    # Only compatible with Azure DevOps (for now).
-
-    # Assumption: we are executing in pipeline whose name is the version string from Set-TimeBasedVersionString.ps1
+function Get-TimeBasedNuGetVersionString([string]$versionString) {
+    # Assumption: input is the version string from Set-TimeBasedVersionString.ps1
 
     # The full version string is expected to be of the form [branch-name-]1111.2222.33-abcabca[-foobar]
     # The NuGet version string form will be 1111.2222.33[-foobar].
     # Number of digits may vary in some components.
 
-    $original = $env:BUILD_BUILDNUMBER
+    # If versionString is not provided, try take it from Azure DevOps environment variable.
+    if (!$versionString) {
+        $versionString = $env:BUILD_BUILDNUMBER
+    }
 
-    if (!$original) {
-        Write-Error "BUILD_BUILDNUMBER environment variable not defined."
+    if (!$versionString) {
+        Write-Error "BUILD_BUILDNUMBER environment variable must be defined or an explicit version string must be passed to the function."
     }
 
     $parser = '^(?<branch>.*-)?(?<versionnumber>\d{4}\.\d{3,4}\.\d+)-.+?(?<suffix>-.+)?$'
-    if (-not ($original -match $parser)) {
-        Write-Error "Pipeline name $original does not match Get-TimeBasedVersionString output format as checked by regex: $buildNumberParser"
+    if (-not ($versionString -match $parser)) {
+        Write-Error "Version string $versionString does not match Get-TimeBasedVersionString output format as checked by regex: $buildNumberParser"
     }
 
     $versionnumber = $Matches.versionnumber
