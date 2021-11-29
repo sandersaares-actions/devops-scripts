@@ -28,5 +28,6 @@ function Get-TimeBasedNuGetVersionString([string]$versionString) {
     Write-Host "NuGet version string is $nugetVersionString"
 
     Write-Host "##vso[task.setvariable variable=NUGET_VERSION_STRING;]$nugetVersionString"
+    Write-Host "::set-output name=NUGET_VERSION_STRING::$nugetVersionString"
     return $nugetVersionString
 }
