@@ -98,7 +98,8 @@ function Get-TimeBasedVersionString([string]$buildType) {
             $branchPrefix = $sourceRef.Substring($sourceRef.LastIndexOf("/") + 1)
         }
         else {
-            Write-Error "Unable to parse source reference: $sourceRef"
+            # Sometimes it is just the branch name.
+            $branchPrefix = $sourceRef
         }
     }
 
