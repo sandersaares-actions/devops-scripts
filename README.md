@@ -3,7 +3,7 @@ A set of useful devops scripts that are published as standalone zip, PowerShell 
 Usage as raw scripts:
 
 1. Get the scripts as ZIP, extract somewhere.
-1. Execute `sandersaares-actions/Load-AllFunctions.ps1`
+1. Execute `. sandersaares-actions/Load-AllFunctions.ps1`
 1. Call the scripts as PowerShell functions (do not call them as scripts).
 
 Usage as PowerShell module:
