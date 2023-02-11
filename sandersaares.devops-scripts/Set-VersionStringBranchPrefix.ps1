@@ -69,6 +69,10 @@ function Set-VersionStringBranchPrefix {
     }
 
     if ($versionPrefix) {
+        # Replace all '_' in $versionPrefix with '-' before combining it with $version because '_' will fail version
+        # string validation. 
+        $versionPrefix = $versionPrefix.Replace("_", "-");
+
         Write-Host "Prefixing version string with '$versionPrefix' to signal the branch."
 
         $version = $versionPrefix + "-" + $version
